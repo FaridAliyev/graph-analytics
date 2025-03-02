@@ -14,10 +14,6 @@
             'edges NIL 
             'doc "List of edges in the graph.")
 
-(PutCIVHere Graph 
-            'is_directed NIL 
-            'doc "Boolean indicating if the graph is directed.")
-
 (* ; "Define methods")
 (DefineMethod ($ Graph) 'add_vertex '(v)
   '(SETF (GETIV SELF 'vertices) (CONS v (GETIV SELF 'vertices))))

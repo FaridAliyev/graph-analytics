@@ -15,10 +15,6 @@
             'doc "Ending vertex of the edge.")
 
 (PutCIVHere Edge 
-            'is_directed NIL 
-            'doc "Boolean indicating if the edge is directed.")
-
-(PutCIVHere Edge 
             'label NIL 
             'doc "Label of the edge.")
 
