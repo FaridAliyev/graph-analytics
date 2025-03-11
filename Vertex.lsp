@@ -3,9 +3,7 @@
 )
 
 (* ; "Class Vertex")
-(SETQ Vertex (DefineClass 'Vertex '(Class)))
-
-(SETQ V1 (SEND Vertex New))
+(SETQ Vertex (DefineClass 'Vertex NIL ($ Class)))
 
 (* ; "Add instance variables")
 (PutCIVHere Vertex

@@ -3,7 +3,7 @@
 )
 
 (* ; "Class Edge")
-(SETQ Edge (DefineClass 'Edge '(Class)))
+(SETQ Edge (DefineClass 'Edge NIL ($ Class)))
 
 (* ; "Add instance variables")
 (PutCIVHere Edge 

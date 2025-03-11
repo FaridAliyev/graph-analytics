@@ -3,7 +3,7 @@
 )
 
 (* ; "Class Graph")
-(SETQ Graph (DefineClass 'Graph '(Class)))
+(SETQ Graph (DefineClass 'Graph NIL ($ Class)))
 
 (* ; "Add instance variables")
 (PutCIVHere Graph 
