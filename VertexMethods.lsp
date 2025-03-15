@@ -4,7 +4,7 @@
 
 (DEFINEQ 
   (neighbors (LAMBDA (V)
-	(GetValue V 'connectedVertices)
+	  (GetValue V 'connectedVertices)
   ))
 )
 
