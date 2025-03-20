@@ -88,12 +88,12 @@
                                   (NOT (EQUAL source vertex))
                                   (NOT (EQUAL target vertex)))
                                 (LET ((paths (shortestPaths graph source target)))
-                                    (SETQ totalPaths (+ totalPaths (LENGTH paths)))
+                                    (SETQ totalPaths (IPLUS totalPaths (LENGTH paths)))
 
                                     (CL:DOLIST (path paths)
                                         (COND 
                                             ((MEMBER vertex (CDR (CL:BUTLAST path)))
-                                             (SETQ passingPaths (+ passingPaths 1)))
+                                             (SETQ passingPaths (ADD1 passingPaths)))
                                         )
                                     )
                                 )
