@@ -8,8 +8,6 @@
   ))
 )
 
-(SETQ neighborsA (neighbors A))
-
 (DEFINEQ 
   (degree (LAMBDA (V)
     (LENGTH (GetValue V 'connectedVertices))

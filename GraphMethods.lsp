@@ -21,7 +21,6 @@
 (DEFINEQ
     (shortestPaths
         (LAMBDA (graph start end)
-            (PRINT (LIST "farids" graph start end))
             (LET ((queue (LIST (LIST start)))
                   (shortestPaths NIL)
                   (visited NIL))
@@ -31,17 +30,14 @@
                         (SETQ queue (CDR queue))
 
                         (LET ((node (CAR (LAST path))))
-                            (PRINT (LIST "Processing node in shortestPaths:" node))
 
                             (COND
                                 ((EQUAL node end)
-                                 (PRINT "Reached Target!")
                                  (SETQ shortestPaths (CONS path shortestPaths)))
 
                                 ((NOT (MEMBER node visited))
                                  (PROGN
                                     (SETQ visited (CONS node visited))
-                                    (PRINT (LIST "farids" node))
 
                                     (CL:DOLIST (neighbor (neighbors node))
                                         (SETQ queue (CONS (APPEND path (LIST neighbor)) queue))))
@@ -56,25 +52,38 @@
     )
 )
 
+
 (DEFINEQ
     (betweenness
         (LAMBDA (graph vertex)
             (LET ((allVertices (GetValue graph 'vertices))
-                  (totalPaths 0))
+                  (totalPaths 0)
+                  (passingPaths 0))
+
                 (CL:DOLIST (source allVertices)
                     (CL:DOLIST (target allVertices)
                         (COND
                             ((AND (NOT (EQUAL source target))
                                   (NOT (EQUAL source vertex))
                                   (NOT (EQUAL target vertex)))
-                                (PRINT (LIST "Calling shortestPaths on" source "to" target))
                                 (LET ((paths (shortestPaths graph source target)))
                                     (SETQ totalPaths (+ totalPaths (LENGTH paths)))
-                                    (PRINT (LIST "Paths from" source "to" target ":" paths))
+
+                                    (CL:DOLIST (path paths)
+                                        (COND 
+                                            ((MEMBER vertex (CDR (CL:BUTLAST path)))
+                                             (SETQ passingPaths (+ passingPaths 1)))
+                                        )
+                                    )
                                 )
                             )
                         )
                     )
+                )
+
+                (COND
+                    ((> totalPaths 0) (/ passingPaths totalPaths))
+                    (T 0)
                 )
             )
         )

@@ -7,12 +7,12 @@
 (SEND G1 SetName 'G1)
 
 (* ; "Add vertices to the graph")
-(addVertex G1 'A)
-(addVertex G1 'B)
-(addVertex G1 'C)
-(addVertex G1 'D)
-(addVertex G1 'E)
-(addVertex G1 'F)
-(addVertex G1 'G)
+(addVertex G1 A)
+(addVertex G1 B)
+(addVertex G1 C)
+(addVertex G1 D)
+(addVertex G1 E)
+(addVertex G1 F)
+(addVertex G1 G)
 
 STOP
