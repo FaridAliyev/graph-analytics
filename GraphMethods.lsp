@@ -19,6 +19,22 @@
 )
 
 (DEFINEQ
+    (addEdge
+        (LAMBDA (graph edge)
+            (PutValue graph 'edges (CONS edge (GetValue graph 'edges)))
+        )
+    )
+)
+
+(DEFINEQ
+    (removeEdge
+        (LAMBDA (graph edge)
+            (PutValue graph 'edges (REMOVE edge (GetValue graph 'edges)))
+        )
+    )
+)
+
+(DEFINEQ
     (shortestPaths
         (LAMBDA (graph start end)
             (LET ((queue (LIST (LIST start)))
@@ -90,5 +106,32 @@
     )
 )
 
+(DEFINEQ
+    (density
+        (LAMBDA (graph)
+            (LET ((vertices (GetValue graph 'vertices))
+                  (edges (GetValue graph 'edges))
+                  (numVertices 0)
+                  (numEdges 0)
+                  (maxEdges 0)
+                  (density 0))
+
+                (SETQ numVertices (LENGTH vertices))
+                (SETQ numEdges (LENGTH edges))
+
+                (SETQ maxEdges (IQUOTIENT (ITIMES numVertices (SUB1 numVertices)) 2))
+
+                (COND
+                    ((> maxEdges 0) 
+                     (SETQ density (/ numEdges maxEdges)))
+                    (T (SETQ density 0)))
+
+                (PRINT (LIST "Graph Density:" density))
+
+                density
+            )
+        )
+    )
+)
 
 STOP

@@ -2,8 +2,7 @@
 					READTABLE "INTERLISP" BASE 10
 )
 
-(LOAD "LoadVertex.lsp")
-(LOAD "LoadEdge.lsp")
-(LOAD "LoadGraph.lsp")
+(LOAD "Edge.lsp")
+(LOAD "EdgeTest.lsp")
 
 STOP
