@@ -140,4 +140,30 @@
     )
 )
 
+(* ; "Compute the diameter of the graph (longest shortest path)")
+(DEFINEQ
+    (diameter
+        (LAMBDA (graph)
+            (LET ((vertices (GetValue graph 'vertices))
+                  (maxShortestPath 0))
+
+                (CL:DOLIST (source vertices)
+                    (CL:DOLIST (target vertices)
+                        (COND
+                            ((NOT (EQUAL source target))
+                             (LET ((paths (shortestPaths graph source target)))
+                                (COND 
+                                    ((AND paths (LENGTH paths))
+                                     (LET ((pathLength (LENGTH (CAR paths))))
+                                         (COND 
+                                             ((> pathLength maxShortestPath)
+                                              (SETQ maxShortestPath pathLength)))))))))))
+
+                maxShortestPath
+            )
+        )
+    )
+)
+
+
 STOP
