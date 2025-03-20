@@ -165,5 +165,28 @@
     )
 )
 
+(* ; "Check if the graph is connected (if all vertices have a path between them)") 
+(DEFINEQ
+    (isConnected
+        (LAMBDA (graph)
+            (LET ((vertices (GetValue graph 'vertices)))
+
+                (CL:DOLIST (source vertices)
+                    (CL:DOLIST (target vertices)
+                        (COND
+                            ((NOT (EQUAL source target))
+                             (LET ((paths (shortestPaths graph source target)))
+
+                                (COND
+                                    ((NULL paths)
+                                     (PRINT (LIST "Disconnected pair found:" source target))
+                                     (RETURN NIL))))))))
+
+                T
+            )
+        )
+    )
+)
+
 
 STOP
