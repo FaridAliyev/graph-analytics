@@ -13,7 +13,7 @@
 (DEFINEQ
     (removeVertex
         (LAMBDA (graph vertex)
-            (PutValue graph 'vertices (CL:DELETE vertex (GetValue graph 'vertices)))
+            (PutValue graph 'vertices (REMOVE vertex (GetValue graph 'vertices)))
         )
     )
 )
@@ -21,6 +21,7 @@
 (DEFINEQ
     (shortestPaths
         (LAMBDA (graph start end)
+            (PRINT (LIST "farids" graph start end))
             (LET ((queue (LIST (LIST start)))
                   (shortestPaths NIL)
                   (visited NIL))
@@ -30,7 +31,8 @@
                         (SETQ queue (CDR queue))
 
                         (LET ((node (CAR (LAST path))))
-                            (PRINT (LIST "Processing node:" node))
+                            (PRINT (LIST "Processing node in shortestPaths:" node))
+
                             (COND
                                 ((EQUAL node end)
                                  (PRINT "Reached Target!")
@@ -39,8 +41,7 @@
                                 ((NOT (MEMBER node visited))
                                  (PROGN
                                     (SETQ visited (CONS node visited))
-                                    
-                                    (PRINT (LIST "Neighbors of" node ":" (neighbors node)))
+                                    (PRINT (LIST "farids" node))
 
                                     (CL:DOLIST (neighbor (neighbors node))
                                         (SETQ queue (CONS (APPEND path (LIST neighbor)) queue))))
@@ -60,7 +61,6 @@
         (LAMBDA (graph vertex)
             (LET ((allVertices (GetValue graph 'vertices))
                   (totalPaths 0))
-
                 (CL:DOLIST (source allVertices)
                     (CL:DOLIST (target allVertices)
                         (COND
