@@ -2,6 +2,7 @@
 					READTABLE "INTERLISP" BASE 10
 )
 
+(* ; "Add a vertex to the graph")
 (DEFINEQ
     (addVertex
         (LAMBDA (graph vertex)
@@ -10,6 +11,7 @@
     )
 )
 
+(* ; "Remove a vertex from the graph")
 (DEFINEQ
     (removeVertex
         (LAMBDA (graph vertex)
@@ -18,6 +20,7 @@
     )
 )
 
+(* ; "Add an edge to the graph")
 (DEFINEQ
     (addEdge
         (LAMBDA (graph edge)
@@ -26,6 +29,7 @@
     )
 )
 
+(* ; "Remove an edge from the graph")
 (DEFINEQ
     (removeEdge
         (LAMBDA (graph edge)
@@ -34,6 +38,7 @@
     )
 )
 
+(* ; "Find all shortest paths between two vertices in the graph")
 (DEFINEQ
     (shortestPaths
         (LAMBDA (graph start end)
@@ -68,7 +73,7 @@
     )
 )
 
-
+(* ; "Compute the betweenness centrality of a vertex in the graph")
 (DEFINEQ
     (betweenness
         (LAMBDA (graph vertex)
@@ -106,6 +111,7 @@
     )
 )
 
+(* ; "Compute the density of the graph")
 (DEFINEQ
     (density
         (LAMBDA (graph)
