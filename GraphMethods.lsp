@@ -224,7 +224,7 @@
 
 (* ; "Compute the eigenvector centrality of a vertex")
 (DEFINEQ
-    (ec
+    (eigenvectorCentrality
         (LAMBDA (graph vertex)
             (LET ((vertices (GetValue graph 'vertices))
                 (scores NIL)
