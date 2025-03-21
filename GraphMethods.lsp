@@ -222,4 +222,61 @@
     )
 )
 
+(* ; "Compute the eigenvector centrality of a vertex")
+(DEFINEQ
+    (ec
+        (LAMBDA (graph vertex)
+            (LET ((vertices (GetValue graph 'vertices))
+                (scores NIL)
+                (newScores NIL)
+                (iterations 10)
+                (i 0))
+
+                (CL:DOLIST (v vertices)
+                    (SETQ scores (CONS (LIST v 1.0) scores)))
+
+
+                (PROG NIL
+                    LOOP
+                    (COND ((>= i iterations) (RETURN NIL)))
+
+                    (SETQ newScores NIL)
+
+                    (LET ((totalSum 0))
+                        
+                        (CL:DOLIST (v vertices)
+                            (LET ((neighbors (neighbors v))
+                                  (sum 0))
+
+                                (CL:DOLIST (neighbor neighbors)
+                                    (SETQ sum (+ sum (CADR (ASSOC neighbor scores)))))
+
+                                
+                                (SETQ totalSum (+ totalSum sum))
+
+                                
+                                (SETQ newScores (CONS (LIST v sum) newScores))))
+
+                        (COND 
+                            ((> totalSum 0)
+                             (LET ((normalizedScores NIL))
+                                 (CL:DOLIST (s newScores)
+                                     (SETQ normalizedScores 
+                                           (CONS (LIST (CAR s) (/ (CADR s) totalSum)) normalizedScores)))
+                                 (SETQ newScores normalizedScores)))))
+
+                    (SETQ scores newScores)
+
+                    (PRINT (LIST "Iteration" i "scores:" scores))
+
+                    (SETQ i (+ i 1))
+
+                    (GO LOOP))
+
+                (CADR (ASSOC vertex scores))
+            )
+        )
+    )
+)
+
 STOP
