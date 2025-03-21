@@ -188,5 +188,38 @@
     )
 )
 
+(* ; "Compute the closeness centrality of a vertex")
+(DEFINEQ
+    (closeness
+        (LAMBDA (graph vertex)
+            (LET ((vertices (GetValue graph 'vertices))
+                  (numVertices 0)
+                  (totalDistance 0)
+                  (closenessScore 0))
+
+                (SETQ numVertices (LENGTH vertices))
+
+                (CL:DOLIST (target vertices)
+                    (COND
+                        ((NOT (EQUAL vertex target))
+                         (LET ((paths (shortestPaths graph vertex target)))
+
+                            (COND
+                                ((AND paths (LENGTH paths))
+                                 (LET ((pathLength (LENGTH (CAR paths))))
+                                     (SETQ totalDistance (+ totalDistance pathLength)))))))))
+
+                (COND
+                    ((> totalDistance 0) 
+                     (SETQ closenessScore (/ (SUB1 numVertices) totalDistance)))
+                    (T (SETQ closenessScore 0)))
+
+                (PRINT (LIST "Closeness centrality for" vertex ":" closenessScore))
+
+                closenessScore
+            )
+        )
+    )
+)
 
 STOP
