@@ -87,75 +87,71 @@
 
 (* ; "Find all shortest paths between two vertices in the graph")
 (DEFINEQ
-    (shortestPaths
-        (LAMBDA (graph start end)
-            (LET ((queue (LIST (LIST start)))
-                  (shortestPaths NIL)
-                  (visited NIL))
+  (shortestPaths
+    (LAMBDA (graph start end)
+      (LET ((queue (LIST (LIST start)))
+            (shortestPaths NIL)
+            (visited NIL)
+            (foundDistance NIL))
 
-                (WHILE queue
-                    (LET ((path (CAR queue)))
-                        (SETQ queue (CDR queue))
+        (WHILE queue
+          (LET ((path (CAR queue)))
+            (SETQ queue (CDR queue))
 
-                        (LET ((node (CAR (LAST path))))
+            (LET ((node (CAR (LAST path))))
+              (COND
+                ((AND foundDistance (> (LENGTH path) foundDistance))
+                 (SETQ queue NIL))
 
-                            (COND
-                                ((EQUAL node end)
-                                 (SETQ shortestPaths (CONS path shortestPaths)))
+                ((EQUAL node end)
+                 (COND
+                   ((NULL foundDistance)
+                    (SETQ foundDistance (LENGTH path)))
+                   )
+                 (SETQ shortestPaths (CONS path shortestPaths)))
 
-                                ((NOT (MEMBER node visited))
-                                 (PROGN
-                                    (SETQ visited (CONS node visited))
+                ((OR (NULL foundDistance) (< (LENGTH path) foundDistance))
+                 (CL:DOLIST (neighbor (neighbors node))
+                   (COND ((NOT (MEMBER neighbor path))
+                          (SETQ queue (APPEND queue (LIST (APPEND path (LIST neighbor)))))))))))))
 
-                                    (CL:DOLIST (neighbor (neighbors node))
-                                        (SETQ queue (CONS (APPEND path (LIST neighbor)) queue))))
-                                 )
-                            )
-                        )
-                    )
-                )
-                shortestPaths
-            )
-        )
+        shortestPaths
+      )
     )
+  )
 )
 
 (* ; "Compute the betweenness centrality of a vertex in the graph")
 (DEFINEQ
-    (betweenness
-        (LAMBDA (graph vertex)
-            (LET ((allVertices (GetValue graph 'vertices))
-                  (totalPaths 0)
-                  (passingPaths 0))
+  (betweenness
+    (LAMBDA (graph vertex)
+      (LET ((vertices (GetValue graph 'vertices))
+            (totalPaths 0)
+            (passingPaths 0))
 
-                (CL:DOLIST (source allVertices)
-                    (CL:DOLIST (target allVertices)
-                        (COND
-                            ((AND (NOT (EQUAL source target))
-                                  (NOT (EQUAL source vertex))
-                                  (NOT (EQUAL target vertex)))
-                                (LET ((paths (shortestPaths graph source target)))
-                                    (SETQ totalPaths (IPLUS totalPaths (LENGTH paths)))
+        (CL:DOLIST (s vertices)
+          (CL:DOLIST (t vertices)
+            (COND
+              ((AND (NOT (EQUAL s t))
+                    (NOT (EQUAL s vertex))
+                    (NOT (EQUAL t vertex)))
+               (LET ((paths (shortestPaths graph s t)))
 
-                                    (CL:DOLIST (path paths)
-                                        (COND 
-                                            ((MEMBER vertex (CDR (CL:BUTLAST path)))
-                                             (SETQ passingPaths (ADD1 passingPaths)))
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
+                 (SETQ totalPaths (+ totalPaths (LENGTH paths)))
 
-                (COND
-                    ((> totalPaths 0) (/ passingPaths totalPaths))
-                    (T 0)
-                )
-            )
+                 (CL:DOLIST (path paths)
+                   (COND
+                     ((MEMBER vertex (CDR (CL:BUTLAST path)))
+                      (SETQ passingPaths (+ passingPaths 1))))))))))
+
+        (COND
+          ((> totalPaths 0)
+           (/ passingPaths totalPaths))
+          (T 0)
         )
+      )
     )
+  )
 )
 
 (* ; "Compute the density of the graph (ratio of actual edges to maximum possible edges)")
