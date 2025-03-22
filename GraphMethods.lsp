@@ -38,6 +38,53 @@
     )
 )
 
+(* ; "Breadth-first search algorithm")
+(DEFINEQ
+  (bfs
+    (LAMBDA (graph start)
+      (LET ((visited (LIST start))
+            (queue (LIST (LIST start 0)))
+            (distances (LIST (LIST start 0))))
+
+        (WHILE queue
+          (LET ((pair (CAR queue)))
+            (SETQ queue (CDR queue))
+
+            (LET ((node (CAR pair))
+                  (dist (CADR pair)))
+
+              (PRINT (LIST "Visiting:" node "Dist:" dist))
+
+              (CL:DOLIST (neighbor (neighbors node))
+                (COND ((NOT (MEMBER neighbor visited))
+                       (SETQ visited (CONS neighbor visited))
+                       (SETQ queue (APPEND queue (LIST (LIST neighbor (+ dist 1)))))
+                       (SETQ distances (CONS (LIST neighbor (+ dist 1)) distances))
+                       (PRINT (LIST "  Found neighbor:" neighbor "-> Distance:" (+ dist 1)))))))))
+
+        distances
+      )
+    )
+  )
+)
+
+(* ; "Find all shortest paths between all pairs of vertices in the graph")
+(DEFINEQ
+  (allPairsShortestPaths
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (result NIL))
+
+        (CL:DOLIST (v vertices)
+          (LET ((dists (bfs graph v)))
+            (SETQ result (CONS (LIST v dists) result))))
+
+        result
+      )
+    )
+  )
+)
+
 (* ; "Find all shortest paths between two vertices in the graph")
 (DEFINEQ
     (shortestPaths
@@ -111,7 +158,7 @@
     )
 )
 
-(* ; "Compute the density of the graph")
+(* ; "Compute the density of the graph (ratio of actual edges to maximum possible edges)")
 (DEFINEQ
     (density
         (LAMBDA (graph)
@@ -142,27 +189,22 @@
 
 (* ; "Compute the diameter of the graph (longest shortest path)")
 (DEFINEQ
-    (diameter
-        (LAMBDA (graph)
-            (LET ((vertices (GetValue graph 'vertices))
-                  (maxShortestPath 0))
+  (diameter
+    (LAMBDA (graph)
+      (LET ((allPairs (allPairsShortestPaths graph))
+            (maxDist 0))
 
-                (CL:DOLIST (source vertices)
-                    (CL:DOLIST (target vertices)
-                        (COND
-                            ((NOT (EQUAL source target))
-                             (LET ((paths (shortestPaths graph source target)))
-                                (COND 
-                                    ((AND paths (LENGTH paths))
-                                     (LET ((pathLength (LENGTH (CAR paths))))
-                                         (COND 
-                                             ((> pathLength maxShortestPath)
-                                              (SETQ maxShortestPath pathLength)))))))))))
+        (CL:DOLIST (entry allPairs)
+          (LET ((distances (CADR entry)))
+            (CL:DOLIST (pair distances)
+              (LET ((d (CADR pair)))
+                (COND ((> d maxDist)
+                       (SETQ maxDist d)))))))
 
-                maxShortestPath
-            )
-        )
+        maxDist
+      )
     )
+  )
 )
 
 (* ; "Check if the graph is connected (if all vertices have a path between them)") 
