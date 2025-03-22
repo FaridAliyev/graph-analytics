@@ -279,4 +279,24 @@
     )
 )
 
+(* ; "Computes the shortest path between the source and target vertices")
+(DEFINEQ
+    (shortestPath
+        (LAMBDA (graph source target)
+            (LET ((paths (shortestPaths graph source target))
+                  (bestPath NIL)
+                  (minLength 9999))
+
+                (CL:DOLIST (p paths)
+                    (LET ((len (LENGTH p)))
+                        (COND ((< len minLength)
+                               (SETQ minLength len)
+                               (SETQ bestPath p)))))
+
+                bestPath
+            )
+        )
+    )
+)
+
 STOP
