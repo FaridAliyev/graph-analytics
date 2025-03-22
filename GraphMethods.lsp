@@ -331,4 +331,34 @@
     )
 )
 
+(DEFINEQ
+  (connectedComponents
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (unvisited (GetValue graph 'vertices))
+            (components NIL))
+
+        (WHILE unvisited
+          (LET ((start (CAR unvisited))
+                (component NIL)
+                (queue (LIST (CAR unvisited))))
+
+            (WHILE queue
+              (LET ((v (CAR queue)))
+                (SETQ queue (CDR queue))
+                (COND ((NOT (MEMBER v component))
+                       (SETQ component (CONS v component))
+                       (SETQ unvisited (REMOVE v unvisited))
+                       (CL:DOLIST (n (neighbors v))
+                         (COND ((MEMBER n unvisited)
+                                (SETQ queue (APPEND queue (LIST n))))))))))
+
+            (SETQ components (CONS component components))))
+
+        components
+      )
+    )
+  )
+)
+
 STOP
