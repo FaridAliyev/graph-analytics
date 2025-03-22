@@ -232,36 +232,31 @@
 
 (* ; "Compute the closeness centrality of a vertex")
 (DEFINEQ
-    (closeness
-        (LAMBDA (graph vertex)
-            (LET ((vertices (GetValue graph 'vertices))
-                  (numVertices 0)
-                  (totalDistance 0)
-                  (closenessScore 0))
+  (closeness
+    (LAMBDA (graph vertex)
+      (LET ((allPairs (allPairsShortestPaths graph))
+            (numVertices (LENGTH (GetValue graph 'vertices)))
+            (totalDistance 0))
 
-                (SETQ numVertices (LENGTH vertices))
+        (CL:DOLIST (entry allPairs)
+          (LET ((v (CAR entry))
+                (distances (CADR entry)))
+            (COND
+              ((EQUAL v vertex)
+               (CL:DOLIST (pair distances)
+                 (LET ((target (CAR pair))
+                       (dist (CADR pair)))
+                   (COND ((NOT (EQUAL vertex target))
+                          (SETQ totalDistance (+ totalDistance dist))))))))))
 
-                (CL:DOLIST (target vertices)
-                    (COND
-                        ((NOT (EQUAL vertex target))
-                         (LET ((paths (shortestPaths graph vertex target)))
-
-                            (COND
-                                ((AND paths (LENGTH paths))
-                                 (LET ((pathLength (LENGTH (CAR paths))))
-                                     (SETQ totalDistance (+ totalDistance pathLength)))))))))
-
-                (COND
-                    ((> totalDistance 0) 
-                     (SETQ closenessScore (/ (SUB1 numVertices) totalDistance)))
-                    (T (SETQ closenessScore 0)))
-
-                (PRINT (LIST "Closeness centrality for" vertex ":" closenessScore))
-
-                closenessScore
-            )
+        (COND
+          ((> totalDistance 0)
+           (/ (SUB1 numVertices) totalDistance))
+          (T 0)
         )
+      )
     )
+  )
 )
 
 (* ; "Compute the eigenvector centrality of a vertex")
