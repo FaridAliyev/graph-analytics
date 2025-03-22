@@ -74,4 +74,10 @@
 (PutValue E12 'end_vertex G)
 (PutValue E12 'label 'E12)
 
+(SETQ E13 (SEND Edge New))
+(SEND E13 SetName 'E13)
+(PutValue E13 'start_vertex H)
+(PutValue E13 'end_vertex I)
+(PutValue E13 'label 'E13)
+
 STOP

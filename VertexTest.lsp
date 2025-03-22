@@ -23,6 +23,12 @@
 (SETQ G (SEND Vertex New))
 (SEND G SetName 'G)
 
+(SETQ H (SEND Vertex New))
+(SEND H SetName 'H)
+
+(SETQ I (SEND Vertex New))
+(SEND I SetName 'I)
+
 (PutValue A 'id 1)
 (PutValue A 'label 'A)
 
@@ -44,6 +50,12 @@
 (PutValue G 'id 7)
 (PutValue G 'label 'G)
 
+(PutValue H 'id 8)
+(PutValue H 'label 'H)
+
+(PutValue I 'id 9)
+(PutValue I 'label 'I)
+
 (PutValue A 'connectedVertices (LIST B C D))
 (PutValue B 'connectedVertices (LIST A C E))
 (PutValue C 'connectedVertices (LIST A B D E F))
@@ -51,5 +63,7 @@
 (PutValue E 'connectedVertices (LIST B C F G))
 (PutValue F 'connectedVertices (LIST C D E G))
 (PutValue G 'connectedVertices (LIST E F))
+(PutValue H 'connectedVertices (LIST I))
+(PutValue I 'connectedVertices (LIST H))
 
 STOP

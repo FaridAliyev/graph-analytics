@@ -205,25 +205,24 @@
 
 (* ; "Check if the graph is connected (if all vertices have a path between them)") 
 (DEFINEQ
-    (isConnected
-        (LAMBDA (graph)
-            (LET ((vertices (GetValue graph 'vertices)))
+  (isConnected
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (disconnected NIL))
 
-                (CL:DOLIST (source vertices)
-                    (CL:DOLIST (target vertices)
-                        (COND
-                            ((NOT (EQUAL source target))
-                             (LET ((paths (shortestPaths graph source target)))
+        (CL:DOLIST (source vertices)
+          (CL:DOLIST (target vertices)
+            (COND
+              ((AND (NOT (EQUAL source target))
+                    (NULL (shortestPaths graph source target)))
+               (PRINT (LIST "Disconnected pair found:" source target))
+               (SETQ disconnected T)))))
 
-                                (COND
-                                    ((NULL paths)
-                                     (PRINT (LIST "Disconnected pair found:" source target))
-                                     (RETURN NIL))))))))
-
-                T
-            )
-        )
+        (COND (disconnected NIL)
+              (T T))
+      )
     )
+  )
 )
 
 (* ; "Compute the closeness centrality of a vertex")
