@@ -361,4 +361,33 @@
   )
 )
 
+(DEFINEQ
+  (mst
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (visited NIL)
+            (edges NIL)
+            (queue NIL))
+
+        (COND ((NULL vertices) NIL))
+
+        (SETQ queue (LIST (CAR vertices)))
+        (SETQ visited (LIST (CAR vertices)))
+
+        (WHILE queue
+          (LET ((v (CAR queue)))
+            (SETQ queue (CDR queue))
+
+            (CL:DOLIST (n (neighbors v))
+              (COND ((NOT (MEMBER n visited))
+                     (SETQ visited (CONS n visited))
+                     (SETQ edges (CONS (LIST v n) edges))
+                     (SETQ queue (APPEND queue (LIST n))))))))
+
+        edges
+      )
+    )
+  )
+)
+
 STOP

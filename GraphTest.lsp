@@ -14,8 +14,8 @@
 (addVertex G1 E)
 (addVertex G1 F)
 (addVertex G1 G)
-(addVertex G1 H)
-(addVertex G1 I)
+(* ; "(addVertex G1 H)")
+(* ; "(addVertex G1 I)")
 
 (* ; "Add edges to the graph")
 (addEdge G1 E1)
@@ -30,6 +30,6 @@
 (addEdge G1 E10)
 (addEdge G1 E11)
 (addEdge G1 E12)
-(addEdge G1 E13)
+(* ; "(addEdge G1 E13)")
 
 STOP
