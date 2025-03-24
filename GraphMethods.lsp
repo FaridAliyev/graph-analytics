@@ -390,4 +390,42 @@
   )
 )
 
+(DEFINEQ
+  (pageRank
+    (LAMBDA (graph vertex)
+      (LET ((vertices (GetValue graph 'vertices))
+            (d 0.85)
+            (iterations 10)
+            (scores NIL)
+            (newScores NIL)
+            (i 0)
+            (N (LENGTH (GetValue graph 'vertices))))
+
+        (CL:DOLIST (v vertices)
+          (SETQ scores (CONS (LIST v (/ 1.0 N)) scores)))
+
+        (WHILE (< i iterations)
+          (SETQ newScores NIL)
+
+          (CL:DOLIST (v vertices)
+            (LET ((neighbors (neighbors v))
+                  (sum 0))
+
+              (CL:DOLIST (n neighbors)
+                (LET ((nPR (CADR (ASSOC n scores)))
+                      (deg (LENGTH (neighbors n))))
+                  (COND ((> deg 0)
+                         (SETQ sum (FPLUS sum (/ nPR deg)))))))
+
+              (SETQ newScores (CONS (LIST v (FPLUS (FQUOTIENT (FDIFFERENCE 1 d) N) (FTIMES d sum))) newScores))))
+
+          (SETQ scores newScores)
+          (SETQ i (+ i 1)))
+
+        (CADR (ASSOC vertex scores))
+      )
+    )
+  )
+)
+
 STOP
