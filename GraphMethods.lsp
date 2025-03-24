@@ -428,4 +428,31 @@
   )
 )
 
+(DEFINEQ
+  (clusteringCoefficient
+    (LAMBDA (vertex)
+      (LET ((neighborsV (neighbors vertex))
+            (numLinks 0)
+            (k 0))
+
+        (SETQ k (LENGTH neighborsV))
+
+        (CL:DOLIST (v1 neighborsV)
+          (CL:DOLIST (v2 neighborsV)
+            (COND ((AND (NOT (EQUAL v1 v2))
+                        (MEMBER v2 (neighbors v1)))
+                   (SETQ numLinks (ADD1 numLinks))))))
+
+        (SETQ numLinks (FQUOTIENT numLinks 2))
+
+        (COND
+          ((AND (> k 1))
+           (FQUOTIENT (FTIMES 2 numLinks) (FTIMES k (SUB1 k))))
+          (T 0)
+        )
+      )
+    )
+  )
+)
+
 STOP
