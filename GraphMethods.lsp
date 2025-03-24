@@ -331,6 +331,7 @@
     )
 )
 
+(* ; "Finds connected components of a graph using BFS")
 (DEFINEQ
   (connectedComponents
     (LAMBDA (graph)
@@ -361,6 +362,7 @@
   )
 )
 
+(* ; "Computes the Minimum Spanning Tree (MST) of a graph using BFS")
 (DEFINEQ
   (mst
     (LAMBDA (graph)
@@ -390,6 +392,7 @@
   )
 )
 
+(* ; "Calculates the PageRank score for a vertex in a graph using an iterative algorithm")
 (DEFINEQ
   (pageRank
     (LAMBDA (graph vertex)
@@ -428,6 +431,7 @@
   )
 )
 
+(* ; "Calculates the clustering coefficient of a vertex, measuring how tightly its neighbors are connected")
 (DEFINEQ
   (clusteringCoefficient
     (LAMBDA (vertex)
