@@ -333,7 +333,7 @@
 
 (* ; "Finds connected components of a graph using BFS")
 (DEFINEQ
-  (connectedComponents
+  (clusters
     (LAMBDA (graph)
       (LET ((vertices (GetValue graph 'vertices))
             (unvisited (GetValue graph 'vertices))
