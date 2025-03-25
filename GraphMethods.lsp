@@ -480,4 +480,40 @@
   )
 )
 
+(DEFINEQ
+  (isBipartite
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (colorMap NIL)
+            (visited NIL)
+            (queue NIL)
+            (isBipartite T))
+
+        (CL:DOLIST (start vertices)
+          (COND
+            ((NOT (MEMBER start visited))
+             (SETQ queue (LIST start))
+             (SETQ colorMap (CONS (LIST start 0) colorMap))
+
+             (WHILE (AND queue isBipartite)
+               (LET ((v (CAR queue)))
+                 (SETQ queue (CDR queue))
+                 (SETQ visited (CONS v visited))
+                 (LET ((currentColor (CADR (ASSOC v colorMap))))
+
+                   (CL:DOLIST (n (neighbors v))
+                     (COND
+                       ((NULL (ASSOC n colorMap))
+                        (SETQ colorMap (CONS (LIST n (LOGXOR 1 currentColor)) colorMap))
+                        (SETQ queue (APPEND queue (LIST n))))
+                       ((= (CADR (ASSOC n colorMap)) currentColor)
+                        (COND (debug (PRINT (LIST "Conflict found between:" v "and" n))))
+                        (SETQ isBipartite NIL))))))))))
+
+        isBipartite
+      )
+    )
+  )
+)
+
 STOP
