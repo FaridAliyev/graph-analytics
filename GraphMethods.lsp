@@ -53,14 +53,14 @@
             (LET ((node (CAR pair))
                   (dist (CADR pair)))
 
-              (PRINT (LIST "Visiting:" node "Dist:" dist))
+              (COND (debug (PRINT (LIST "Visiting:" node "Dist:" dist))))
 
               (CL:DOLIST (neighbor (neighbors node))
                 (COND ((NOT (MEMBER neighbor visited))
                        (SETQ visited (CONS neighbor visited))
                        (SETQ queue (APPEND queue (LIST (LIST neighbor (+ dist 1)))))
                        (SETQ distances (CONS (LIST neighbor (+ dist 1)) distances))
-                       (PRINT (LIST "  Found neighbor:" neighbor "-> Distance:" (+ dist 1)))))))))
+                       (COND (debug (PRINT (LIST "  Found neighbor:" neighbor "-> Distance:" (+ dist 1)))))))))))
 
         distances
       )
@@ -146,7 +146,7 @@
 
         (COND
           ((> totalPaths 0)
-           (/ passingPaths totalPaths))
+           (FQUOTIENT passingPaths totalPaths))
           (T 0)
         )
       )
@@ -172,10 +172,10 @@
 
                 (COND
                     ((> maxEdges 0) 
-                     (SETQ density (/ numEdges maxEdges)))
+                     (SETQ density (FQUOTIENT numEdges maxEdges)))
                     (T (SETQ density 0)))
 
-                (PRINT (LIST "Graph Density:" density))
+                (COND (debug (PRINT (LIST "Graph Density:" density))))
 
                 density
             )
@@ -215,7 +215,7 @@
             (COND
               ((AND (NOT (EQUAL source target))
                     (NULL (shortestPaths graph source target)))
-               (PRINT (LIST "Disconnected pair found:" source target))
+               (COND (debug (PRINT (LIST "Disconnected pair found:" source target))))
                (SETQ disconnected T)))))
 
         (COND (disconnected NIL)
@@ -246,7 +246,7 @@
 
         (COND
           ((> totalDistance 0)
-           (/ (SUB1 numVertices) totalDistance))
+           (FQUOTIENT (SUB1 numVertices) totalDistance))
           (T 0)
         )
       )
@@ -299,7 +299,7 @@
 
                     (SETQ scores newScores)
 
-                    (PRINT (LIST "Iteration" i "scores:" scores))
+                    (COND (debug (PRINT (LIST "Iteration" i "scores:" scores))))
 
                     (SETQ i (+ i 1))
 
