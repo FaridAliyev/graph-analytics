@@ -517,6 +517,7 @@
   )
 )
 
+(* ; "Returns the intersection of two lists")
 (DEFINEQ
   (intersection
     (LAMBDA (list1 list2)
@@ -530,6 +531,7 @@
   )
 )
 
+(* ; "Bron–Kerbosch recursive algorithm to find all maximal cliques in a graph")
 (DEFINEQ
   (bronkerbosch
     (LAMBDA (R P X cliques)
@@ -554,6 +556,7 @@
   )
 )
 
+(* ; "Finds all maximal cliques in the given graph using Bron–Kerbosch algorithm")
 (DEFINEQ
   (cliques
     (LAMBDA (graph)
@@ -564,6 +567,7 @@
   )
 )
 
+(* ; "Prints each clique in a readable format. Use it with the 'cliques' function (e.g. (printCliques (cliques graph)))")
 (DEFINEQ
   (printCliques
     (LAMBDA (cliqueList)
