@@ -480,6 +480,7 @@
   )
 )
 
+(* ; "Determines whether the graph can be divided into two distinct sets of vertices such that all edges connect vertices from different sets")
 (DEFINEQ
   (isBipartite
     (LAMBDA (graph)
