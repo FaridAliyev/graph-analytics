@@ -517,4 +517,61 @@
   )
 )
 
+(DEFINEQ
+  (intersection
+    (LAMBDA (list1 list2)
+      (LET ((result NIL))
+        (CL:DOLIST (item list1)
+          (COND ((MEMBER item list2)
+                 (SETQ result (CONS item result)))))
+        result
+      )
+    )
+  )
+)
+
+(DEFINEQ
+  (bronkerbosch
+    (LAMBDA (R P X cliques)
+      (COND
+        ((AND (NULL P) (NULL X))
+         (SETQ cliques (CONS R cliques)))
+
+        (T
+         (CL:DOLIST (v P)
+           (LET ((Nv (neighbors v)))
+             (SETQ cliques
+                   (bronkerbosch
+                    (CONS v R)
+                    (intersection P Nv)
+                    (intersection X Nv)
+                    cliques))
+             (SETQ P (REMOVE v P))
+             (SETQ X (CONS v X))))))
+
+      cliques
+    )
+  )
+)
+
+(DEFINEQ
+  (cliques
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices)))
+        (bronkerbosch NIL vertices NIL NIL)
+      )
+    )
+  )
+)
+
+(DEFINEQ
+  (printCliques
+    (LAMBDA (cliqueList)
+      (CL:DOLIST (clique cliqueList)
+        (PRINT (CONS "Clique:" clique)))
+      'DONE
+    )
+  )
+)
+
 STOP
