@@ -459,4 +459,25 @@
   )
 )
 
+(* ; "Calculates the eccentricity of a vertex, measuring the longest shortest path to any other vertex")
+(DEFINEQ
+  (eccentricity
+    (LAMBDA (graph vertex)
+      (LET ((distances (bfs graph vertex))
+            (maxDist 0))
+
+        (CL:DOLIST (pair distances)
+          (LET ((target (CAR pair))
+                (d (CADR pair)))
+            (COND
+              ((NOT (EQUAL vertex target))
+               (COND ((> d maxDist)
+                      (SETQ maxDist d)))))))
+
+        maxDist
+      )
+    )
+  )
+)
+
 STOP
