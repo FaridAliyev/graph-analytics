@@ -567,17 +567,6 @@
   )
 )
 
-(* ; "Prints each clique in a readable format. Use it with the 'cliques' function (e.g. (printCliques (cliques graph)))")
-(DEFINEQ
-  (printCliques
-    (LAMBDA (cliqueList)
-      (CL:DOLIST (clique cliqueList)
-        (PRINT (CONS "Clique:" clique)))
-      'DONE
-    )
-  )
-)
-
 (* ; "Computes the power centrality of a vertex in the graph")
 (DEFINEQ
   (powerCentrality
@@ -606,6 +595,98 @@
           (SETQ i (+ i 1)))
 
         (CADR (ASSOC vertex scores))
+      )
+    )
+  )
+)
+
+(* ; "Finds the communities in the graph using the Label Propagation algorithm")
+(DEFINEQ
+  (communities
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (labels NIL)
+            (iterations 10)
+            (i 0))
+
+        (CL:DOLIST (v vertices)
+          (SETQ labels (CONS (LIST v v) labels)))
+
+        (WHILE (< i iterations)
+          (CL:DOLIST (v vertices)
+            (LET ((neighborLabels NIL))
+
+              (CL:DOLIST (n (neighbors v))
+                (LET ((label (CADR (ASSOC n labels))))
+                  (SETQ neighborLabels (CONS label neighborLabels))))
+
+              (LET ((bestLabel NIL)
+                    (bestCount 0))
+
+                (CL:DOLIST (l neighborLabels)
+                  (LET ((count 0))
+                    (CL:DOLIST (x neighborLabels)
+                      (COND ((EQUAL x l) (SETQ count (+ count 1)))))
+                    (COND ((> count bestCount)
+                           (SETQ bestCount count)
+                           (SETQ bestLabel l)))))
+
+                (CL:SETF (CADR (ASSOC v labels)) bestLabel))))
+
+          (SETQ i (+ i 1)))
+
+        (LET ((communities NIL))
+          (CL:DOLIST (pair labels)
+            (LET ((v (CAR pair))
+                  (label (CADR pair)))
+              (LET ((group (ASSOC label communities)))
+                (COND
+                  (group (CL:SETF (CDR group) (CONS v (CDR group))))
+                  (T (SETQ communities (CONS (LIST label v) communities)))))))
+
+        (LET ((result NIL))
+          (CL:DOLIST (g communities)
+            (SETQ result (CONS (CDR g) result)))
+          result)
+      )
+    )
+  )
+))
+
+(* ; "Computes the betweenness centrality of an edge in the graph")
+(DEFINEQ
+  (edgeBetweenness
+    (LAMBDA (graph edge)
+      (LET ((u (GetValue edge 'start_vertex))
+            (v (GetValue edge 'end_vertex))
+            (vertices (GetValue graph 'vertices))
+            (totalPaths 0)
+            (passingPaths 0))
+
+        (CL:DOLIST (s vertices)
+          (CL:DOLIST (t vertices)
+            (COND
+              ((NOT (EQUAL s t))
+               (LET ((paths (shortestPaths graph s t)))
+                 (SETQ totalPaths (+ totalPaths (LENGTH paths)))
+
+                 (CL:DOLIST (path paths)
+                   (LET ((i 0)
+                         (found NIL))
+
+                     (WHILE (< (+ i 1) (LENGTH path))
+                       (LET ((a (getListElementAt i path))
+                             (b (getListElementAt (+ i 1) path)))
+                         (COND ((OR (AND (EQUAL a u) (EQUAL b v))
+                                    (AND (EQUAL a v) (EQUAL b u)))
+                                (SETQ found T))))
+                       (SETQ i (+ i 1)))
+
+                     (COND (found (SETQ passingPaths (+ passingPaths 1)))))))))))
+
+        (COND ((> totalPaths 0)
+               (FQUOTIENT passingPaths totalPaths))
+              (T 0))
       )
     )
   )

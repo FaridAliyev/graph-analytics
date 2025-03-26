@@ -3,6 +3,7 @@
 )
 
 (LOAD "Settings.lsp")
+(LOAD "Helpers.lsp")
 (LOAD "LoadVertex.lsp")
 (LOAD "LoadEdge.lsp")
 (LOAD "LoadGraph.lsp")
