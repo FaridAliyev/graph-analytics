@@ -578,4 +578,37 @@
   )
 )
 
+(* ; "Computes the power centrality of a vertex in the graph")
+(DEFINEQ
+  (powerCentrality
+    (LAMBDA (graph vertex)
+      (LET ((vertices (GetValue graph 'vertices))
+            (alpha 0.2)
+            (beta 1.0)
+            (iterations 4)
+            (scores NIL)
+            (newScores NIL)
+            (i 0))
+
+        (CL:DOLIST (v vertices)
+          (SETQ scores (CONS (LIST v 1.0) scores)))
+
+        (WHILE (< i iterations)
+          (SETQ newScores NIL)
+
+          (CL:DOLIST (v vertices)
+            (LET ((sum 0))
+              (CL:DOLIST (n (neighbors v))
+                (SETQ sum (FPLUS sum (CADR (ASSOC n scores)))))
+              (SETQ newScores (CONS (LIST v (FPLUS beta (FTIMES alpha sum))) newScores))))
+
+          (SETQ scores newScores)
+          (SETQ i (+ i 1)))
+
+        (CADR (ASSOC vertex scores))
+      )
+    )
+  )
+)
+
 STOP
