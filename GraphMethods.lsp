@@ -692,4 +692,30 @@
   )
 )
 
+(* ; "Finds all central nodes in the graph (vertices with minimum eccentricity)")
+(DEFINEQ
+  (centralNodes
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (eccentricities NIL)
+            (minEccentricity NIL)
+            (result NIL))
+
+        (CL:DOLIST (v vertices)
+          (LET ((e (eccentricity graph v)))
+            (SETQ eccentricities (CONS (LIST v e) eccentricities))
+            (COND
+              ((OR (NULL minEccentricity) (< e minEccentricity))
+               (SETQ minEccentricity e)))))
+
+        (CL:DOLIST (pair eccentricities)
+          (COND ((= (CADR pair) minEccentricity)
+                 (SETQ result (CONS (CAR pair) result)))))
+
+        result
+      )
+    )
+  )
+)
+
 STOP
