@@ -24,4 +24,18 @@
   )
 )
 
+(* ; "Returns the intersection of two lists")
+(DEFINEQ
+  (intersection
+    (LAMBDA (list1 list2)
+      (LET ((result NIL))
+        (CL:DOLIST (item list1)
+          (COND ((MEMBER item list2)
+                 (SETQ result (CONS item result)))))
+        result
+      )
+    )
+  )
+)
+
 STOP

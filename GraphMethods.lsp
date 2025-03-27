@@ -517,20 +517,6 @@
   )
 )
 
-(* ; "Returns the intersection of two lists")
-(DEFINEQ
-  (intersection
-    (LAMBDA (list1 list2)
-      (LET ((result NIL))
-        (CL:DOLIST (item list1)
-          (COND ((MEMBER item list2)
-                 (SETQ result (CONS item result)))))
-        result
-      )
-    )
-  )
-)
-
 (* ; "Bron–Kerbosch recursive algorithm to find all maximal cliques in a graph")
 (DEFINEQ
   (bronkerbosch
@@ -713,6 +699,138 @@
                  (SETQ result (CONS (CAR pair) result)))))
 
         result
+      )
+    )
+  )
+)
+
+(* ; "Computes percolation centrality for a given vertex and percolation score p(v)")
+(DEFINEQ
+  (percolationCentrality
+    (LAMBDA (graph vertex pValue)
+      (LET ((vertices (GetValue graph 'vertices))
+            (total 0))
+
+        (CL:DOLIST (s vertices)
+          (CL:DOLIST (t vertices)
+            (COND
+              ((AND (NOT (EQUAL s t))
+                    (NOT (EQUAL s vertex))
+                    (NOT (EQUAL t vertex)))
+
+               (LET ((paths (shortestPaths graph s t))
+                     (passing 0)
+                     (totalPaths 0))
+
+                 (SETQ totalPaths (LENGTH paths))
+
+                 (CL:DOLIST (p paths)
+                   (COND ((MEMBER vertex (CDR (CL:BUTLAST p)))
+                          (SETQ passing (+ passing 1)))))
+
+                 (COND ((> totalPaths 0)
+                        (SETQ total (FPLUS total (FTIMES (FQUOTIENT passing totalPaths) pValue))))))))))
+
+        total
+      )
+    )
+  )
+)
+
+(* ; "Returns how many maximal cliques the given vertex belongs to")
+(DEFINEQ
+  (crossCliqueCentrality
+    (LAMBDA (graph vertex)
+      (LET ((cliqueList (cliques graph))
+            (count 0))
+
+        (CL:DOLIST (c cliqueList)
+          (COND ((MEMBER vertex c)
+                 (SETQ count (+ count 1)))))
+
+        count
+      )
+    )
+  )
+)
+
+(* ; "Computes Freeman degree centrality of the entire graph")
+(DEFINEQ
+  (freemanCentrality
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (degrees NIL)
+            (maxDegree 0)
+            (numerator 0)
+            (n 0))
+
+        (CL:DOLIST (v vertices)
+          (LET ((deg (LENGTH (neighbors v))))
+            (SETQ degrees (CONS deg degrees))
+            (COND ((> deg maxDegree) (SETQ maxDegree deg)))))
+
+        (CL:DOLIST (d degrees)
+          (SETQ numerator (+ numerator (- maxDegree d))))
+
+        (SETQ n (LENGTH vertices))
+
+        (COND
+          ((< n 3) 0)
+          (T (FQUOTIENT numerator (FTIMES (SUB1 n) (- n 2)))))
+      )
+    )
+  )
+)
+
+(* ; "Computes the average global efficiency of the graph based on shortest path distances")
+(DEFINEQ
+  (graphEfficiency
+    (LAMBDA (graph)
+      (LET ((vertices (GetValue graph 'vertices))
+            (sum 0)
+            (n (LENGTH (GetValue graph 'vertices))))
+
+        (CL:DOLIST (i vertices)
+          (CL:DOLIST (j vertices)
+            (COND
+              ((NOT (EQUAL i j))
+               (LET ((paths (shortestPaths graph i j)))
+                 (COND ((AND paths (> (LENGTH paths) 0))
+                        (LET ((firstPath (CAR paths))
+                              (length 0))
+                          (SETQ length (- (LENGTH firstPath) 1))
+                          (COND ((> length 0)
+                                 (SETQ sum (+ sum (/ 1.0 length)))))))))))))
+
+        (COND ((<= n 1) 0)
+              (T (FQUOTIENT sum (FTIMES n (- n 1)))))
+      )
+    )
+  )
+)
+
+(* ; "Computes contribution centrality of a vertex based on change in global efficiency")
+(DEFINEQ
+  (contributionCentrality
+    (LAMBDA (graph vertex)
+      (LET ((originalEfficiency (graphEfficiency graph))
+            (modifiedGraph (SEND Graph New))
+            (newEfficiency 0))
+
+        (CL:DOLIST (v (GetValue graph 'vertices))
+          (COND ((NOT (EQUAL v vertex))
+                 (addVertex modifiedGraph v))))
+
+        (CL:DOLIST (e (GetValue graph 'edges))
+          (LET ((u (GetValue e 'start_vertex))
+                (w (GetValue e 'end_vertex)))
+            (COND ((AND (NOT (EQUAL u vertex)) (NOT (EQUAL w vertex)))
+                   (addEdge modifiedGraph e)))))
+
+        (SETQ newEfficiency (graphEfficiency modifiedGraph))
+
+        (COND ((= originalEfficiency 0) 0)
+              (T (/ (- originalEfficiency newEfficiency) originalEfficiency)))
       )
     )
   )
