@@ -643,8 +643,8 @@
 (DEFINEQ
   (edgeBetweenness
     (LAMBDA (graph edge)
-      (LET ((u (GetValue edge 'start_vertex))
-            (v (GetValue edge 'end_vertex))
+      (LET ((u (GetValue edge 'from))
+            (v (GetValue edge 'to))
             (vertices (GetValue graph 'vertices))
             (totalPaths 0)
             (passingPaths 0))
@@ -822,8 +822,8 @@
                  (addVertex modifiedGraph v))))
 
         (CL:DOLIST (e (GetValue graph 'edges))
-          (LET ((u (GetValue e 'start_vertex))
-                (w (GetValue e 'end_vertex)))
+          (LET ((u (GetValue e 'from))
+                (w (GetValue e 'to)))
             (COND ((AND (NOT (EQUAL u vertex)) (NOT (EQUAL w vertex)))
                    (addEdge modifiedGraph e)))))
 

@@ -7,11 +7,11 @@
 
 (* ; "Add instance variables")
 (PutCIVHere Edge 
-            'start_vertex NIL 
+            'from NIL 
             'doc "Starting vertex of the edge.")
 
 (PutCIVHere Edge 
-            'end_vertex NIL 
+            'to NIL 
             'doc "Ending vertex of the edge.")
 
 (PutCIVHere Edge 
